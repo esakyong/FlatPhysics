@@ -17,6 +17,8 @@ CameraExtents CameraManager::GetExtents()
 
 void Application::Setting() {
 
+    
+
     CameraExtents CameraExtent = camera.GetExtents();
     
     float padding = (CameraExtent.right - CameraExtent.left) * 0.05f;
@@ -25,8 +27,7 @@ void Application::Setting() {
     {
         
         int type = RandomHelper::RandomInteger(0, 1);
-        //type = (int)ShapeType::Circle;
-        type = (int)ShapeType::Box;
+        
         FlatBody* body = new FlatBody();
         
         float x = RandomHelper::RandomFloat(CameraExtent.left + padding, CameraExtent.right - padding);
@@ -34,30 +35,37 @@ void Application::Setting() {
 
         if (type == (int)ShapeType::Circle)
         {
-            if (!FlatBody::CreatCircleBody(10.0f, FlatVector(x, y), 2.0f, false, 0.5f, *body, errorMessage))
+            if (!FlatBody::CreatCircleBody(20.0f, FlatVector(x, y), 2.0f, false, 0.5f, *body, errorMessage))
             {
                 // throw new Exceptions
+                std::cout << errorMessage << std::endl;
+                exit(-1);
             }
         }
         else if (type == (int)ShapeType::Box)
         {
-            if (!FlatBody::CreatBoxBody(2.0f, 2.0f, FlatVector(x, y), 2.0f, false, 0.5f, *body, errorMessage))
+            if (!FlatBody::CreatBoxBody(40.0f, 40.0f, FlatVector(x, y), 2.0f, false, 0.5f, *body, errorMessage))
             {
                 // throw new Exceptions
+                std::cout << errorMessage << "\n";
+                exit(1);
             }
         }
         else
         {
             // throw error unknown type
+            std::cout << "unknown type" << std::endl;
+            exit(1);
         }
 
-        bodyVector.push_back(body);
+        world.AddBody(body);
         colors[i] = RandomHelper::RandomColor();
         outlineColors[i] = WHITE;
+        
     }
 }
 
-void Application::Update() {
+void Application::Update(float deltaTime) {
 
     // camera move
     camera.camera.zoom += ((float)GetMouseWheelMove() * camera.zoomSpeed);
@@ -65,7 +73,7 @@ void Application::Update() {
     if (camera.camera.zoom > 30.0f) camera.camera.zoom = 30.0f;
     else if (camera.camera.zoom < 0.1f) camera.camera.zoom = 0.1f;
 
-    if (IsKeyPressed(KEY_R))
+    if (IsKeyPressed(KEY_T))
     {
         camera.camera.zoom = defaultZoom;
         camera.camera.target = Vector2 { WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 };
@@ -73,101 +81,88 @@ void Application::Update() {
 
     if (IsKeyDown(KEY_RIGHT))
     {
-        camera.camera.target.x += GetFrameTime() * camera.linearSpeed;
+        camera.camera.target.x += deltaTime * camera.linearSpeed;
     }
 
     if (IsKeyDown(KEY_LEFT))
     {
-        camera.camera.target.x -= GetFrameTime() * camera.linearSpeed;
+        camera.camera.target.x -= deltaTime * camera.linearSpeed;
     }
 
     if (IsKeyDown(KEY_DOWN))
     {
-        camera.camera.target.y += GetFrameTime() * camera.linearSpeed;
+        camera.camera.target.y += deltaTime * camera.linearSpeed;
     }
 
     if (IsKeyDown(KEY_UP))
     {
-        camera.camera.target.y -= GetFrameTime() * camera.linearSpeed;
+        camera.camera.target.y -= deltaTime * camera.linearSpeed;
     }
     // particle move
 
     float dx = 0.0f;
     float dy = 0.0f;
-    float speed = 8.0f;
+    float forceMagnitude = 240000.0f;
 
     if (IsKeyDown(KEY_D)) dx++;
     if (IsKeyDown(KEY_A)) dx--;
     if (IsKeyDown(KEY_W)) dy--;
     if (IsKeyDown(KEY_S)) dy++;
 
+    FlatBody* body;
+    if (!world.GetBody(0, body))
+    {
+        // throw Exception("Could not find the body at the specified index.");
+        std::cout << "Could not find the body at the specified index." << "\n";
+        exit(1);
+    }
+
     if (dx || dy)
     {
-        FlatVector direction = FlatMath::Normalize(FlatVector(dx, dy));
-        FlatVector velocity = direction * speed * GetFrameTime();
-        bodyVector[0]->Move(velocity);
+        FlatVector forcedirection = FlatMath::Normalize(FlatVector(dx, dy));
+        FlatVector force = forcedirection * forceMagnitude;
+        body->AddForce(force);
     }
 
-    for (int i = 0; i < bodyVector.size(); i++)
+    if (IsKeyDown(KEY_R))
     {
-        // FlatBody* body = bodyVector[i];
-        bodyVector[i]->Rotate(PI / 2.0f * GetFrameTime());
-        outlineColors[i] = WHITE;
+        body->Rotate(PI / 2.0f * deltaTime);
     }
 
-    for (int i = 0; i < bodyVector.size() - 1; i++)
-    {
-        FlatBody* bodyA = bodyVector[i];
+    WrapScreen();
 
-        for (int j = i + 1; j < bodyVector.size(); j++)
-        {
-            FlatBody* bodyB = bodyVector[j];
-            if (Collisions::IntersectPolygons(bodyA->GetTransformedVertices(), bodyB->GetTransformedVertices()))
-            {
-                
-                outlineColors[i] = RED;
-                outlineColors[j] = RED;
-            }
-          
-#if false            
-            FlatVector normal;
-            float depth;
-            if (Collisions::IntersectCircles(
-                bodyA->GetPosition(), bodyA->Radius,
-                bodyB->GetPosition(), bodyB->Radius,
-                normal, depth))
-            {
-                bodyA->Move(-normal * depth / 2);
-                bodyB->Move(normal * depth / 2);
-            }
-#endif            
-        }
-    }
-
+    world.Step(deltaTime);
     
 }
 
-void Application::Draw() {
+void Application::Draw(float deltaTime) {
 
     BeginMode2D(camera.camera);
 
-    for (int i = 0; i < bodyCount; i++)
+    for (int i = 0; i < world.BodyCount(); i++)
     {
-        auto& body = bodyVector[i];
+        FlatBody* body;
+        if (!world.GetBody(i, body))
+        {
+            // throw Exception("Could not find a body at the specified index.");
+            std::cout << "Could not find the body at the specified index." << "\n";
+            exit(1);
+        }
+
         Vector2 position = FlatConvertor::ToVector2(body->GetPosition());
         if (body->shapeType == ShapeType::Circle)
         {
             DrawCircle(position.x, position.y, body->Radius, colors[i]);
             
-            DrawCircleLines(position.x, position.y, body->Radius, RAYWHITE);
+            DrawCircleLines(position.x, position.y, body->Radius, outlineColors[i]);
         }
         else if (body->shapeType == ShapeType::Box)
         {
-            auto vertices = body->GetTransformedVertices();
+            std::vector<FlatVector> vertices = body->GetTransformedVertices();
             FlatConvertor::ToVector2Array(vertices, vertexBuffer);
             
             DrawTriangleFan(&vertexBuffer[0], vertexBuffer.size(), colors[i]);
-            GameDraw::DrawPolygonLines(vertices, outlineColors[i]);
+            GameDraw::DrawPolygonLines(vertexBuffer, outlineColors[i]);
             //DrawTriangleFan(vertexBuffer.data(), vertexBuffer.size(), outlineColors[i]);
         }
 
@@ -175,14 +170,35 @@ void Application::Draw() {
 
     EndMode2D();
 
-    DrawText(TextFormat("ZOOM : %d%%", int(camera.camera.zoom / defaultZoom * 100)), 50, GetScreenHeight() - 50 - 10, 20, YELLOW);
+    DrawText(TextFormat("ZOOM : %d %%", int(camera.camera.zoom / defaultZoom * 100)), 50, GetScreenHeight() - 50 - 10, 20, YELLOW);
     DrawFPS(20, 20);
 }
 
 void Application::End() {
     delete[] colors;
     delete[] outlineColors;
-    for (auto& body : bodyVector) {
-        delete body;
+    
+}
+
+void Application::WrapScreen()
+{
+    CameraExtents extent;
+    extent = camera.GetExtents();
+
+    float viewWidth = extent.right - extent.left;
+    float viewHeight = extent.top - extent.bottom;
+
+    for (int i = 0; i < world.BodyCount(); i++)
+    {
+        FlatBody* body;
+        if (!world.GetBody(i, body))
+        {
+            std::cout << "error" << "\n";
+            exit(-1);
+        }
+        if (body->GetPosition().x < extent.left) { body->MoveTo(body->GetPosition() + FlatVector(viewWidth, 0.0f)); }
+        if (body->GetPosition().x > extent.right) { body->MoveTo(body->GetPosition() - FlatVector(viewWidth, 0.0f)); }
+        if (body->GetPosition().y < extent.bottom) { body->MoveTo(body->GetPosition() + FlatVector(0.0f, viewHeight)); }
+        if (body->GetPosition().y > extent.top) { body->MoveTo(body->GetPosition() - FlatVector(0.0f, viewHeight)); }
     }
 }

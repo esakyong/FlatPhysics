@@ -17,6 +17,11 @@ namespace FlatPhysics {
 		return FlatVector(x * s, y * s);
 	}
 
+	FlatVector operator* (const float s, const FlatVector& v)
+	{
+		return FlatVector(v.x * s, v.y * s);
+	}
+
 	FlatVector FlatVector::operator/ (const float s) const
 	{
 		return FlatVector(x / s, y / s);

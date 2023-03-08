@@ -35,8 +35,10 @@
   <ItemGroup>
     <ClCompile Include="src\Application\Application.cpp" />
     <ClCompile Include="src\Application\main.cpp" />
+    <ClCompile Include="src\Engine\FlatBody.cpp" />
     <ClCompile Include="src\Engine\FlatTransform.cpp" />
     <ClCompile Include="src\Engine\FlatVector.cpp" />
+    <ClCompile Include="src\Engine\FlatWorld.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

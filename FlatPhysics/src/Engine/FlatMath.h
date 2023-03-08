@@ -1,7 +1,8 @@
 #pragma once
 
-#include "FlatVector.h"
 #include <cmath>
+#include "FlatVector.h"
+
 namespace FlatPhysics {
 	class FlatMath
 	{
@@ -43,7 +44,7 @@ namespace FlatPhysics {
 		}
 
 		static float Dot(const FlatVector& a, const FlatVector& b) {
-			return a.x * b.x + a.y + b.y;
+			return a.x * b.x + a.y * b.y;
 		}
 
 		static float Cross(const FlatVector& a, const FlatVector& b) {

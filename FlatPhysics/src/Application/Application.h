@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Common.h"
 #include <string>
 #include <vector>
+#include "Common.h"
+
 
 using namespace FlatPhysics;
 
@@ -24,12 +25,14 @@ class Application
 {
 public:
 	void Setting();
-	void Update();
-	void Draw();
+	void Update(float time);
+	void Draw(float time);
 	void End();
+
+private:
 	std::string errorMessage;
 
-	const float defaultZoom = 24.0f;
+	const float defaultZoom = 1.20f;
 	CameraManager camera
 	{ 
 		{ 
@@ -40,14 +43,19 @@ public:
 		70.0f, 0.5f
 	};
 
-	int bodyCount = 10;
-	std::vector<FlatBody*> bodyVector;
+	int bodyCount = 30;
+	
 	Color* colors = new Color[bodyCount];
 	Color* outlineColors = new Color[bodyCount];
-	//Color outlineColors[10];
-	//Color colors[10];
+	
 	std::vector<Vector2> vertexBuffer;
+
+
+	FlatWorld world;
+
+
+	void WrapScreen();
 };
 
-inline Application app;
+
 

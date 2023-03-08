@@ -15,6 +15,7 @@ namespace FlatPhysics {
 		FlatVector operator+ (const FlatVector& other) const;
 		FlatVector operator- (const FlatVector& other) const;
 		FlatVector operator* (const float s) const;
+		friend FlatVector operator* (const float s, const FlatVector& v);
 		FlatVector operator/ (const float s) const;
 
 		FlatVector& operator+= (const FlatVector& other) {

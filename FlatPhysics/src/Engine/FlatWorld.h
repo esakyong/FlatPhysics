@@ -1,12 +1,41 @@
 #pragma once
+#include <vector>
+
+#include "FlatVector.h"
+#include "Collisions.h"
+#include "FlatBody.h"
 
 namespace FlatPhysics {
-	namespace FlatWorld {
 	
-		const float MinBodySize = 0.01f * 0.01f;
-		const float MaxBodySize = 64.0f * 64.0f;
+	class FlatBody;
 
-		const float MinDensity = 0.5f;	// g/cm^3
-		const float MaxDensity = 21.4f;
+	class FlatWorld {
+	public:
+		static float MinBodySize() { return 0.01f * 0.01f; }
+		static float MaxBodySize() { return 64.0f * 64.0f; }
+
+		static float MinDensity() { return 0.5f; }	// g/cm^3
+		static float MaxDensity() { return 21.4f; }
+	private:
+		std::vector<FlatBody*> bodyVector;
+		FlatVector gravity;
+
+	public:
+		FlatWorld();
+		~FlatWorld();
+
+		int BodyCount();
+
+		void AddBody(FlatBody* body);
+
+		void RemoveBody(FlatBody* body);
+
+		bool GetBody(int index, FlatBody* &body);
+
+		void Step(float time);
+		
+		void ResolveCollision(FlatBody* bodyA, FlatBody* bodyB, FlatVector normal, float depth);
+
+		bool Collide(FlatBody* bodyA, FlatBody* bodyB, FlatVector& normal, float& depth);
 	};
 }

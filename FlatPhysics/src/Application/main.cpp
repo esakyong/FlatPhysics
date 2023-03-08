@@ -1,10 +1,10 @@
-#include "Common.h"
+
 #include "Application.h"
 
 
 
 int main(int argc, char** argv) {
-
+	Application app;
 	
 	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Game");
 	SetWindowState(FLAG_VSYNC_HINT);
@@ -13,13 +13,13 @@ int main(int argc, char** argv) {
 	app.Setting();
 
 	while (!WindowShouldClose()) {
-
-		app.Update();
+		float time = GetFrameTime();
+		app.Update(time);
 
 		BeginDrawing();
 		ClearBackground(SKYBLUE);
-
-			app.Draw();
+		
+			app.Draw(time);
 
 		EndDrawing();
 	}
