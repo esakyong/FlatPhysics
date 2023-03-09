@@ -12,7 +12,7 @@ namespace FlatPhysics {
 	class FlatWorld {
 	public:
 		static float MinBodySize() { return 0.01f * 0.01f; }
-		static float MaxBodySize() { return 64.0f * 64.0f; }
+		static float MaxBodySize() { return 10000000000; }
 
 		static float MinDensity() { return 0.5f; }	// g/cm^3
 		static float MaxDensity() { return 21.4f; }
@@ -34,7 +34,7 @@ namespace FlatPhysics {
 
 		void Step(float time);
 		
-		void ResolveCollision(FlatBody* bodyA, FlatBody* bodyB, FlatVector normal, float depth);
+		void ResolveCollision(FlatBody* bodyA, FlatBody* bodyB, const FlatVector& normal, float depth);
 
 		bool Collide(FlatBody* bodyA, FlatBody* bodyB, FlatVector& normal, float& depth);
 	};

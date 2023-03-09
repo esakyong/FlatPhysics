@@ -19,11 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Application\GameDraw.h" />
     <ClInclude Include="src\Application\RandomHelper.h" />
     <ClInclude Include="src\Application\Application.h" />
     <ClInclude Include="src\Application\Common.h" />
-    <ClInclude Include="src\Application\FlatConvertor.h" />
+    <ClInclude Include="src\Application\FlatConverter.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Engine\Collisions.h" />
     <ClInclude Include="src\Engine\FlatBody.h" />

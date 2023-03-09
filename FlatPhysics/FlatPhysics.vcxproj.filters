@@ -30,7 +30,7 @@
     <ClInclude Include="src\Application\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Application\FlatConvertor.h">
+    <ClInclude Include="src\Application\FlatConverter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Application\Common.h">
@@ -46,9 +46,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\FlatTransform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Application\GameDraw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

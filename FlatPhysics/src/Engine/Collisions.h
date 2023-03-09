@@ -10,6 +10,158 @@ namespace FlatPhysics
 	{
 	
 	public:
+		bool static IntersectCirclePolygon(const FlatVector& circleCenter, const float circleRadius,
+			const FlatVector& polygonCenter, const std::vector<FlatVector>& vertices,
+			FlatVector& normal, float& depth)
+		{
+
+			depth = std::numeric_limits<float>::max();
+
+			FlatVector axis = FlatVector::Zero();
+			float axisDepth = 0.0f;
+			float minA, maxA, minB, maxB;
+
+			for (int i = 0; i < vertices.size(); i++)
+			{
+				FlatVector va = vertices[i];
+				FlatVector vb = vertices[(i + 1) % vertices.size()];
+
+				FlatVector edge = vb - va;
+				axis = FlatVector(-edge.y, edge.x);
+				axis = FlatMath::Normalize(axis);
+
+
+				ProjectVertices(vertices, axis, minA, maxA);
+				ProjectCircle(circleCenter, circleRadius, axis, minB, maxB);
+
+				if (minA >= maxB || minB >= maxA)
+				{
+					return false;
+				}
+
+				axisDepth = std::min(maxB - minA, maxA - minB);
+
+				if (axisDepth < depth)
+				{
+					depth = axisDepth;
+					normal = axis;
+				}
+			}
+
+			int cpIndex = FindClosestPointOnPolygon(circleCenter, vertices);
+			FlatVector cp = vertices[cpIndex];
+
+			axis = cp - circleCenter;
+			axis = FlatMath::Normalize(axis);
+
+			ProjectVertices(vertices, axis, minA, maxA);
+			ProjectCircle(circleCenter, circleRadius, axis, minB, maxB);
+
+			if (minA >= maxB || minB >= maxA)
+			{
+				return false;
+			}
+
+			axisDepth = std::min(maxB - minA, maxA - minB);
+
+			if (axisDepth < depth)
+			{
+				depth = axisDepth;
+				normal = axis;
+			}
+
+
+		
+
+			FlatVector direction = polygonCenter - circleCenter;
+
+			if (FlatMath::Dot(direction, normal) < 0)
+			{
+				normal = -normal;
+			}
+
+
+			return true;
+		}
+
+		bool static IntersectPolygons(const FlatVector centerA, const std::vector<FlatVector>& verticesA, 
+			const FlatVector centerB, const std::vector<FlatVector>& verticesB,
+			FlatVector& normal, float& depth)
+		{
+
+			depth = std::numeric_limits<float>::max();
+
+			for (int i = 0; i < verticesA.size(); i++)
+			{
+				FlatVector va = verticesA[i];
+				FlatVector vb = verticesA[(i + 1) % verticesA.size()];
+
+				FlatVector edge = vb - va;
+				FlatVector axis(-edge.y, edge.x);
+				axis = FlatMath::Normalize(axis);
+
+				float minA, maxA, minB, maxB;
+				ProjectVertices(verticesA, axis, minA, maxA);
+				ProjectVertices(verticesB, axis, minB, maxB);
+
+				if (minA >= maxB || minB >= maxA)
+				{
+					return false;
+				}
+
+
+				float axisDepth = std::min(maxB - minA, maxA - minB);
+
+				if (axisDepth < depth)
+				{
+					depth = axisDepth;
+					normal = axis;
+				}
+
+
+			}
+
+
+
+
+			for (int i = 0; i < verticesB.size(); i++)
+			{
+				FlatVector va = verticesB[i];
+				FlatVector vb = verticesB[(i + 1) % verticesB.size()];
+
+				FlatVector edge = vb - va;
+				FlatVector axis(-edge.y, edge.x);
+				axis = FlatMath::Normalize(axis);
+
+				float minA, maxA, minB, maxB;
+				ProjectVertices(verticesA, axis, minA, maxA);
+				ProjectVertices(verticesB, axis, minB, maxB);
+
+				if (minA >= maxB || minB >= maxA)
+				{
+					return false;
+				}
+
+				float axisDepth = std::min(maxB - minA, maxA - minB);
+
+				if (axisDepth < depth)
+				{
+					depth = axisDepth;
+					normal = axis;
+				}
+			}
+
+
+			FlatVector direction = centerB - centerA;
+
+			if (FlatMath::Dot(direction, normal) < 0)
+			{
+				normal = -normal;
+			}
+
+			return true;
+		}
+
 		bool static IntersectCirclePolygon(const FlatVector& circleCenter, const float circleRadius, 
 			const std::vector<FlatVector>& vertices,
 			FlatVector& normal, float& depth)

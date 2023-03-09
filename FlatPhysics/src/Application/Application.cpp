@@ -1,9 +1,9 @@
 #include "Application.h"
 
-#include "FlatConvertor.h"
-#include "RandomHelper.h"
-#include "GameDraw.h"
 
+#include "RandomHelper.h"
+
+#include <stdexcept>
 
 CameraExtents CameraManager::GetExtents()
 {
@@ -17,52 +17,23 @@ CameraExtents CameraManager::GetExtents()
 
 void Application::Setting() {
 
-    
-
     CameraExtents CameraExtent = camera.GetExtents();
     
-    float padding = (CameraExtent.right - CameraExtent.left) * 0.05f;
+    float padding = (CameraExtent.right - CameraExtent.left) * 0.1f;
     
-    for (int i = 0; i < bodyCount; i++)
+
+    if (!FlatBody::CreatBoxBody(CameraExtent.right - CameraExtent.left - padding * 2, 30.0f, { WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f + 100.0f },
+        1.0f, true, 0.5f, *goundBody, errorMessage))
     {
-        
-        int type = RandomHelper::RandomInteger(0, 1);
-        
-        FlatBody* body = new FlatBody();
-        
-        float x = RandomHelper::RandomFloat(CameraExtent.left + padding, CameraExtent.right - padding);
-        float y = RandomHelper::RandomFloat(CameraExtent.bottom + padding, CameraExtent.top - padding);
-
-        if (type == (int)ShapeType::Circle)
-        {
-            if (!FlatBody::CreatCircleBody(20.0f, FlatVector(x, y), 2.0f, false, 0.5f, *body, errorMessage))
-            {
-                // throw new Exceptions
-                std::cout << errorMessage << std::endl;
-                exit(-1);
-            }
-        }
-        else if (type == (int)ShapeType::Box)
-        {
-            if (!FlatBody::CreatBoxBody(40.0f, 40.0f, FlatVector(x, y), 2.0f, false, 0.5f, *body, errorMessage))
-            {
-                // throw new Exceptions
-                std::cout << errorMessage << "\n";
-                exit(1);
-            }
-        }
-        else
-        {
-            // throw error unknown type
-            std::cout << "unknown type" << std::endl;
-            exit(1);
-        }
-
-        world.AddBody(body);
-        colors[i] = RandomHelper::RandomColor();
-        outlineColors[i] = WHITE;
-        
+        throw std::invalid_argument(errorMessage);
     }
+    
+    world.AddBody(goundBody);
+
+    colors.push_back(DARKGREEN);
+    outlineColors.push_back(WHITE);
+
+ 
 }
 
 void Application::Update(float deltaTime) {
@@ -71,7 +42,20 @@ void Application::Update(float deltaTime) {
     camera.camera.zoom += ((float)GetMouseWheelMove() * camera.zoomSpeed);
 
     if (camera.camera.zoom > 30.0f) camera.camera.zoom = 30.0f;
-    else if (camera.camera.zoom < 0.1f) camera.camera.zoom = 0.1f;
+    else if (camera.camera.zoom < 0.01f) camera.camera.zoom = 0.01f;
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    {
+        float width = RandomHelper::RandomFloat(5, 20);
+        float height = RandomHelper::RandomFloat(5, 20);
+        FlatBody* body = new FlatBody();
+
+        FlatVector worldMousePosition = FlatConvertor::ToFlatVector(GetScreenToWorld2D(GetMousePosition(), camera.camera));
+        if (!FlatBody::CreatBoxBody(width, height, worldMousePosition, 2.0f, false, 0.5f, *body, errorMessage))
+        {
+
+        }
+    }
 
     if (IsKeyPressed(KEY_T))
     {
@@ -99,7 +83,7 @@ void Application::Update(float deltaTime) {
         camera.camera.target.y -= deltaTime * camera.linearSpeed;
     }
     // particle move
-
+#if false
     float dx = 0.0f;
     float dy = 0.0f;
     float forceMagnitude = 240000.0f;
@@ -128,9 +112,9 @@ void Application::Update(float deltaTime) {
     {
         body->Rotate(PI / 2.0f * deltaTime);
     }
-
-    WrapScreen();
-
+#endif
+    
+    
     world.Step(deltaTime);
     
 }
@@ -152,18 +136,18 @@ void Application::Draw(float deltaTime) {
         Vector2 position = FlatConvertor::ToVector2(body->GetPosition());
         if (body->shapeType == ShapeType::Circle)
         {
-            DrawCircle(position.x, position.y, body->Radius, colors[i]);
+            DrawCircleV(position, body->Radius, colors[i]);
             
-            DrawCircleLines(position.x, position.y, body->Radius, outlineColors[i]);
+            DrawRing(position, body->Radius * 0.9f, body->Radius, 0, 360, 100, outlineColors[i]);
         }
         else if (body->shapeType == ShapeType::Box)
         {
             std::vector<FlatVector> vertices = body->GetTransformedVertices();
             FlatConvertor::ToVector2Array(vertices, vertexBuffer);
             
-            DrawTriangleFan(&vertexBuffer[0], vertexBuffer.size(), colors[i]);
-            GameDraw::DrawPolygonLines(vertexBuffer, outlineColors[i]);
-            //DrawTriangleFan(vertexBuffer.data(), vertexBuffer.size(), outlineColors[i]);
+            DrawTriangleFan(vertexBuffer.data(), vertexBuffer.size(), colors[i]);
+            //GameDraw::DrawPolygonLines(vertexBuffer, 3, outlineColors[i]);
+            
         }
 
     }
@@ -175,9 +159,7 @@ void Application::Draw(float deltaTime) {
 }
 
 void Application::End() {
-    delete[] colors;
-    delete[] outlineColors;
-    
+   
 }
 
 void Application::WrapScreen()

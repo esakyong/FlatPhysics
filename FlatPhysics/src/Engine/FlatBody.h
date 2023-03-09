@@ -40,6 +40,7 @@ namespace FlatPhysics {
 	public:
 		float Density;
 		float Mass;
+		float InvMass;
 		float Restitution;
 		float Area;
 		
@@ -69,7 +70,7 @@ namespace FlatPhysics {
 	public:
 		std::vector<FlatVector> GetTransformedVertices();
 
-		void Step(float time);
+		void Step(float time, const FlatVector& gravity);
 
 		void Move(const FlatVector& amount);
 

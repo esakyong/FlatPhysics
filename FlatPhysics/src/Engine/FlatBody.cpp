@@ -16,7 +16,15 @@ namespace FlatPhysics
 		IsStatic(isStatic), Radius(radius), Width(width), Height(height), shapeType(shapeType)
 	{
 		
-		
+		if (!IsStatic)
+		{
+			InvMass = 1.0f / Mass;
+		}
+		else
+		{
+			InvMass = 0.0f;
+		}
+
 		if (shapeType == ShapeType::Box)
 		{
 			vertices = CreateBoxVertices(Width, Height);
@@ -78,10 +86,13 @@ namespace FlatPhysics
 		return transformedVertices;
 	}
 
-	void FlatBody::Step(float time)
+	void FlatBody::Step(float time, const FlatVector& gravity)
 	{
-		FlatVector acceleration = force / Mass;
-		LinearVelocity += acceleration * time;
+		//FlatVector acceleration = force / Mass;
+		//LinearVelocity += acceleration * time;
+
+		LinearVelocity += gravity * time;
+
 		position += LinearVelocity * time;
 		rotation += rotationalVelocity * time;
 
