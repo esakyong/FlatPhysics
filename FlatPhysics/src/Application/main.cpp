@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
 	
 	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Game");
 	SetWindowState(FLAG_VSYNC_HINT);
-	SetTargetFPS(60);
+	//SetTargetFPS(60);
 
 	app.Setting();
 

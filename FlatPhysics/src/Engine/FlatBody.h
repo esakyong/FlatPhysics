@@ -9,8 +9,9 @@
 #include "FlatVector.h"
 #include "FlatMath.h"
 #include "FlatWorld.h"
+#include "FlatAABB.h"
 
-#define PI 3.141592
+#define PI 3.141592f
 
 namespace FlatPhysics {
 	
@@ -23,54 +24,60 @@ namespace FlatPhysics {
 
 
 	class FlatBody {
+	
 	private:
+		
 		FlatVector position;
 		
-		float rotation;
-		float rotationalVelocity;
+		float angle;
+		float angularVelocity;
 
 		FlatVector force;
-
+		
 		std::vector<FlatVector> vertices;
 		
 		std::vector<FlatVector> transformedVertices;
+		FlatAABB aabb;
 
 		bool transformUpdateRequired;
+		bool aabbUpdateRequired;
 
 	public:
+		ShapeType shapeType;
 		float Density;
 		float Mass;
 		float InvMass;
 		float Restitution;
 		float Area;
-		
+		float Inertia;
+		float InvInertia;
 		bool IsStatic;
-		
 		float Radius;
 		float Width;
 		float Height;
 		
 		FlatVector LinearVelocity;
 
-		std::vector<int> Triangles;
-
-		ShapeType shapeType;
-
 		FlatVector GetPosition() const;
-		
-		FlatBody() {}
+		float GetAngle() const;
 
-		FlatBody(FlatVector position, float density, float mass, float restitution, float area,
-			bool isStatic, float radius, float width, float height, ShapeType shapeType);
+		FlatBody();
+
+		FlatBody(float density, float mass, float inertia, float restitution, float area,
+			bool isStatic, float radius, float width, float height,
+			const std::vector<FlatVector>& vertices, ShapeType shapeType);
 	private:
 
-		std::vector<int> CreateBoxTriangles();
-		std::vector<FlatVector> CreateBoxVertices(float width, float height);
+		//std::vector<int> CreateBoxTriangles();
+		
+		static std::vector<FlatVector> CreateBoxVertices(float width, float height);
 
 	public:
 		std::vector<FlatVector> GetTransformedVertices();
 
-		void Step(float time, const FlatVector& gravity);
+		FlatAABB GetAABB();
+
+		void Step(float time, const FlatVector& gravity, int iterations);
 
 		void Move(const FlatVector& amount);
 
@@ -78,11 +85,13 @@ namespace FlatPhysics {
 		
 		void Rotate(float amount);
 
+		void RotateTo(float amount);
+
 		void AddForce(const FlatVector& amount);
 
-		static bool CreatCircleBody(float radius, const FlatVector& position, float density, bool isStatic, float restitution, FlatBody& body, std::string& errorMessage);
+		static bool CreateCircleBody(float radius, float density, bool isStatic, float restitution, FlatBody& body, std::string& errorMessage);
 
-		static bool CreatBoxBody(float width, float height, const FlatVector& position, float density, bool isStatic, float restitution, FlatBody& body, std::string& errorMessage);
+		static bool CreateBoxBody(float width, float height, float density, bool isStatic, float restitution, FlatBody& body, std::string& errorMessage);
 	};
 
 }

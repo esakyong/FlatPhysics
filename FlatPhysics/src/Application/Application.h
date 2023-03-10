@@ -4,9 +4,11 @@
 #include <vector>
 #include "Common.h"
 #include "FlatConverter.h"
-
+#include "FlatEntity.h"
 
 using namespace FlatPhysics;
+
+
 
 struct CameraExtents {
 	float left;
@@ -31,31 +33,28 @@ public:
 	void End();
 
 private:
+
+
 	std::string errorMessage;
 
-	const float defaultZoom = 2.4f;
+	const float defaultZoom = 2.0f;
 	CameraManager camera
 	{ 
 		{ 
 			{ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 },
-			{ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 },
+			{ 0, 0 },
 			0.0f, defaultZoom
 		}, 
 		70.0f, 0.5f
 	};
 
-	FlatBody* goundBody = new FlatBody();
 	
-	std::vector<Color> colors;
-	std::vector<Color> outlineColors;
 	
-	std::vector<Vector2> vertexBuffer;
-
+	std::vector<FlatEntity*> entityVector;
+	std::vector<FlatEntity*> entityRemovalVector;
 
 	FlatWorld world;
 
-
-	void WrapScreen();
 };
 
 

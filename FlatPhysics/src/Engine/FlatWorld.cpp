@@ -1,6 +1,7 @@
 #include "FlatWorld.h"
 
-namespace FlatPhysics {
+namespace FlatPhysics 
+{
 
 	FlatWorld::FlatWorld() : gravity(FlatVector(0.0f, 98.1f))
 	{
@@ -33,7 +34,6 @@ namespace FlatPhysics {
 	bool FlatWorld::GetBody(int index, FlatBody*& body)
 	{
 		
-
 		if (index < 0 || index >= bodyVector.size())
 		{
 			return false;
@@ -42,58 +42,132 @@ namespace FlatPhysics {
 		return true;
 	}
 
-	void FlatWorld::Step(float time)
+	void FlatWorld::Step(float time, int totalIterations)
 	{
-		// Movement step
-		for (int i = 0; i < bodyVector.size(); i++)
-		{
-			bodyVector[i]->Step(time, gravity);
-		}
+		totalIterations = FlatMath::Clamp(totalIterations, MinIterations(), MaxIterations());
 
-		// collision step
-		for (int i = 0; i < bodyVector.size() - 1; i++)
-		{
-			FlatBody* bodyA = bodyVector[i];
+		ContactPointVector.clear();
 
-			for (int j = i + 1; j < bodyVector.size(); j++)
+		for (int currentIteration = 0; currentIteration < totalIterations; currentIteration++)
+		{ 
+			// Movement step
+			for (int i = 0; i < bodyVector.size(); i++)
 			{
+				bodyVector[i]->Step(time, gravity, totalIterations);
+			}
 
-				FlatBody* bodyB = bodyVector[j];
+			contactVector.clear();
 
-				if (bodyA->IsStatic && bodyB->IsStatic)
+			// collision step
+			for (int i = 0; i < bodyVector.size() - 1; i++)
+			{
+				FlatBody* bodyA = bodyVector[i];
+				FlatAABB bodyA_aabb = bodyA->GetAABB();
+				
+				for (int j = i + 1; j < bodyVector.size(); j++)
 				{
-					continue;
-				}
 
-				FlatVector normal;
-				float depth;
-				if (Collide(bodyA, bodyB, normal, depth))
-				{
-					if (bodyA->IsStatic)
+					FlatBody* bodyB = bodyVector[j];
+					FlatAABB bodyB_aabb = bodyB->GetAABB();
+	
+					
+					if (bodyA->IsStatic && bodyB->IsStatic)
 					{
-						bodyB->Move(normal * depth);
+						continue;
 					}
-					else if (bodyB->IsStatic)
+
+					if (!Collisions::IntersectAABBs(bodyA_aabb, bodyB_aabb))
 					{
-						bodyA->Move(-normal * depth);
+						continue;
 					}
-					else 
+
+
+
+					FlatVector normal;
+					float depth;
+					if (Collisions::Collide(bodyA, bodyB, normal, depth))
 					{
-						bodyA->Move(-normal * depth / 2.0f);
-						bodyB->Move(normal * depth / 2.0f);
+						SeperateBodies(bodyA, bodyB, normal * depth);
+						
+						FlatVector contact1;
+						FlatVector contact2;
+						int contactCount;
+						Collisions::FindContactPoints(bodyA, bodyB, contact1, contact2, contactCount);
+
+						ShapeType shapeTypeA = bodyA->shapeType;
+						ShapeType shapeTypeB = bodyB->shapeType;
+						
+
+						FlatManifold* contact = new FlatManifold(
+							bodyA, bodyB, normal, depth,
+							contact1, contact2, contactCount);
+
+						contactVector.push_back(contact);
+						
 					}
 					
-
-					ResolveCollision(bodyA, bodyB, normal, depth);
 				}
+				
+			}
+
+			for (int i = 0; i < contactVector.size(); i++)
+			{
+				FlatManifold* contact = contactVector[i];
+				ResolveCollision(*contact);
+
+				// Add contact points for display (DEBUG).
+				if (currentIteration == totalIterations - 1)
+				{
+					auto it = std::find(ContactPointVector.begin(), ContactPointVector.end(), &contact->Contact1);
+					if (it == ContactPointVector.end())
+					{
+						ContactPointVector.push_back(&contact->Contact1);
+					}
+
+					if (contact->ContactCount > 1)
+					{
+						auto it = std::find(ContactPointVector.begin(), ContactPointVector.end(), &contact->Contact2);
+						if (it == ContactPointVector.end())
+						{
+							ContactPointVector.push_back(&contact->Contact2);
+						}
+					}
+				}
+				
+				
 			}
 		}
+
 	}
 	
-	void FlatWorld::ResolveCollision(FlatBody* bodyA, FlatBody* bodyB, const FlatVector& normal, float depth)
+	void FlatWorld::SeperateBodies(FlatBody* bodyA, FlatBody* bodyB, const FlatVector& mtv)
 	{
+		if (bodyA->IsStatic)
+		{
+			bodyB->Move(mtv);
+		}
+		else if (bodyB->IsStatic)
+		{
+			bodyA->Move(-mtv);
+		}
+		else
+		{
+			bodyA->Move(-mtv / 2.0f);
+			bodyB->Move(mtv / 2.0f);
+		}
+	}
+
+	void FlatWorld::ResolveCollision(const FlatManifold& contact)
+	{
+		FlatBody* bodyA = contact.BodyA;
+		FlatBody* bodyB = contact.BodyB;
+		FlatVector normal = contact.Normal;
+		float depth = contact.Depth;
+
 		FlatVector relativeVelocity = bodyB->LinearVelocity - bodyA->LinearVelocity;
 		
+
+
 		if (FlatMath::Dot(relativeVelocity, normal) > 0.0f)
 		{
 			return;
@@ -102,7 +176,8 @@ namespace FlatPhysics {
 		float e = std::min(bodyA->Restitution, bodyB->Restitution);
 
 		float j = -(1.0f + e) * FlatMath::Dot(relativeVelocity, normal);
-		j /= (bodyA->InvMass + bodyB->InvMass);
+
+		j /= bodyA->InvMass + bodyB->InvMass;
 
 		FlatVector impulse = j * normal;
 
@@ -111,54 +186,5 @@ namespace FlatPhysics {
 	}
 
 	
-	bool FlatWorld::Collide(FlatBody* bodyA, FlatBody* bodyB, FlatVector& normal, float& depth)
-	{
-		normal = FlatVector::Zero();
-		depth = 0.0f;
-
-		ShapeType shapeTypeA = bodyA->shapeType;
-		ShapeType shapeTypeB = bodyB->shapeType;
-
-		if (shapeTypeA == ShapeType::Box)
-		{
-			if (shapeTypeB == ShapeType::Box)
-			{
-				return Collisions::IntersectPolygons(
-					bodyA->GetPosition(), bodyA->GetTransformedVertices(), 
-					bodyB->GetPosition(), bodyB->GetTransformedVertices(),
-					normal, depth);
-			}
-
-			else if (shapeTypeB == ShapeType::Circle)
-			{
-				bool result = Collisions::IntersectCirclePolygon(
-					bodyB->GetPosition(), bodyB->Radius,
-					bodyA->GetPosition(), bodyA->GetTransformedVertices(),
-					normal, depth);
-				normal = -normal;
-				return result;
-			}
-		}
-
-		else if (shapeTypeA == ShapeType::Circle)
-		{
-			if (shapeTypeB == ShapeType::Box)
-			{
-				return Collisions::IntersectCirclePolygon(
-					bodyA->GetPosition(), bodyA->Radius, 
-					bodyB->GetPosition(), bodyB->GetTransformedVertices(),
-					normal, depth);
-			}
-
-			else if (shapeTypeB == ShapeType::Circle)
-			{
-				return Collisions::IntersectCircles(
-					bodyA->GetPosition(), bodyA->Radius, 
-					bodyB->GetPosition(), bodyB->Radius,
-					normal, depth);
-			}
-		}
-
-		return false;
-	}
+	
 }

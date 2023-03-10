@@ -4,7 +4,7 @@
 
 using namespace FlatPhysics;
 
-class FlatConvertor {
+class FlatConverter {
 
 public:
 	static float scale() { return 1.0f; }
