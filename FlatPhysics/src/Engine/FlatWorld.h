@@ -38,7 +38,8 @@ namespace FlatPhysics {
 		FlatVector impulseArray[2];
 		FlatVector raArray[2];
 		FlatVector rbArray[2];
-
+		FlatVector frictionImpulseArray[2];
+		float jArray[2];
 	public:
 		FlatWorld();
 		~FlatWorld();
@@ -63,5 +64,7 @@ namespace FlatPhysics {
 		void ResolveCollisionBasic(const FlatManifold& contact);
 
 		void ResolveCollisionWithRotation(const FlatManifold& contact);
+
+		void ResolveCollisionWithRotationAndFriction(const FlatManifold& contact);
 	};
 }

@@ -50,7 +50,7 @@ void FlatEntity::Draw()
 		Vector2 vb = { body->Radius, 0.0f };
 		Matrix matrix1 = MatrixTranslate(body->GetPosition().x, body->GetPosition().y, 0.0f);
 		Matrix matrix2 = MatrixRotateZ(body->GetAngle());
-		Matrix matrix = MatrixMultiply(matrix1, matrix2);
+		Matrix matrix = MatrixMultiply(matrix2, matrix1);
 		va = Vector2Transform(va, matrix);
 		vb = Vector2Transform(vb, matrix);
 

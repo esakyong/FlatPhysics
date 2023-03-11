@@ -55,7 +55,9 @@ namespace FlatPhysics {
 		float Radius;
 		float Width;
 		float Height;
-		
+		float StaticFriction;
+		float DynamicFriction;
+
 		FlatVector LinearVelocity;
 		float AngularVelocity;
 

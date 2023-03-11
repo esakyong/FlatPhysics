@@ -22,7 +22,7 @@ namespace FlatPhysics
 		Density(density), Mass(mass), InvMass(mass > 0.0f ? 1.0f / mass : 0.0f),
 		Inertia(inertia), InvInertia(inertia > 0.0f ? 1.0f / inertia : 0.0f), Restitution(restitution), Area(area),
 		IsStatic(isStatic), Radius(radius), Width(width), Height(height), shapeType(shapeType),
-		transformUpdateRequired(true), aabbUpdateRequired(true)
+		transformUpdateRequired(true), aabbUpdateRequired(true), StaticFriction(0.6f), DynamicFriction(0.4f)
 	{
 		
 
