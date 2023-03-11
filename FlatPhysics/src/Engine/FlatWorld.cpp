@@ -198,7 +198,7 @@ namespace FlatPhysics
 			FlatVector rbPerp(-rb.y, rb.x);
 
 			FlatVector angularLinearVelocityA = raPerp * bodyA->AngularVelocity;
-			FlatVector angularLinearVelocityB = raPerp * bodyB->AngularVelocity;
+			FlatVector angularLinearVelocityB = rbPerp * bodyB->AngularVelocity;
 
 
 			FlatVector relativeVelocity = 
