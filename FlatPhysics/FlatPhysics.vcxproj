@@ -19,32 +19,35 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Application\FlatEntity.h" />
-    <ClInclude Include="src\Application\RandomHelper.h" />
-    <ClInclude Include="src\Application\Application.h" />
-    <ClInclude Include="src\Application\Common.h" />
-    <ClInclude Include="src\Application\FlatConverter.h" />
-    <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\Engine\Collisions.h" />
-    <ClInclude Include="src\Engine\FlatAABB.h" />
-    <ClInclude Include="src\Engine\FlatBody.h" />
-    <ClInclude Include="src\Engine\FlatManifold.h" />
-    <ClInclude Include="src\Engine\FlatMath.h" />
-    <ClInclude Include="src\Engine\FlatTransform.h" />
-    <ClInclude Include="src\Engine\FlatVector.h" />
-    <ClInclude Include="src\Engine\FlatWorld.h" />
+    <ClInclude Include="src\Engine\GameEngine.h" />
+    <ClInclude Include="src\Engine\GameEngine\FlatEntity.h" />
+    <ClInclude Include="src\Engine\GameEngine\RandomHelper.h" />
+    <ClInclude Include="src\Game\GameLogic.h" />
+    <ClInclude Include="src\Game\GameLogic\Common.h" />
+    <ClInclude Include="src\Game\Application.h" />
+    <ClInclude Include="src\Engine\GameEngine\Common.h" />
+    <ClInclude Include="src\Engine\GameEngine\FlatConverter.h" />
+    <ClInclude Include="src\Engine\PhysicsEngine.h" />
+    <ClInclude Include="src\Engine\PhysicsEngine\Collisions.h" />
+    <ClInclude Include="src\Engine\PhysicsEngine\FlatAABB.h" />
+    <ClInclude Include="src\Engine\PhysicsEngine\FlatBody.h" />
+    <ClInclude Include="src\Engine\PhysicsEngine\FlatManifold.h" />
+    <ClInclude Include="src\Engine\PhysicsEngine\FlatMath.h" />
+    <ClInclude Include="src\Engine\PhysicsEngine\FlatTransform.h" />
+    <ClInclude Include="src\Engine\PhysicsEngine\FlatVector.h" />
+    <ClInclude Include="src\Engine\PhysicsEngine\FlatWorld.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Application\Application.cpp" />
-    <ClCompile Include="src\Application\FlatEntity.cpp" />
-    <ClCompile Include="src\Application\main.cpp" />
-    <ClCompile Include="src\Engine\Collision.cpp" />
-    <ClCompile Include="src\Engine\FlatAABB.cpp" />
-    <ClCompile Include="src\Engine\FlatBody.cpp" />
-    <ClCompile Include="src\Engine\FlatManifold.cpp" />
-    <ClCompile Include="src\Engine\FlatTransform.cpp" />
-    <ClCompile Include="src\Engine\FlatVector.cpp" />
-    <ClCompile Include="src\Engine\FlatWorld.cpp" />
+    <ClCompile Include="src\Game\Application.cpp" />
+    <ClCompile Include="src\Engine\GameEngine\FlatEntity.cpp" />
+    <ClCompile Include="src\Game\main.cpp" />
+    <ClCompile Include="src\Engine\PhysicsEngine\Collision.cpp" />
+    <ClCompile Include="src\Engine\PhysicsEngine\FlatAABB.cpp" />
+    <ClCompile Include="src\Engine\PhysicsEngine\FlatBody.cpp" />
+    <ClCompile Include="src\Engine\PhysicsEngine\FlatManifold.cpp" />
+    <ClCompile Include="src\Engine\PhysicsEngine\FlatTransform.cpp" />
+    <ClCompile Include="src\Engine\PhysicsEngine\FlatVector.cpp" />
+    <ClCompile Include="src\Engine\PhysicsEngine\FlatWorld.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

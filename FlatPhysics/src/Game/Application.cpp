@@ -1,7 +1,7 @@
 #include "Application.h"
 
 
-#include "RandomHelper.h"
+
 
 #include <stdexcept>
 
@@ -18,7 +18,7 @@ CameraExtents CameraManager::GetExtents()
 }
 
 void Application::Setting() {
-
+    SetTargetFPS(60);
     SetWindowPosition(10, 40);
 
     CameraExtents CameraExtent = camera.GetExtents();

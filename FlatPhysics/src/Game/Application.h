@@ -2,9 +2,7 @@
 
 #include <string>
 #include <vector>
-#include "Common.h"
-#include "FlatConverter.h"
-#include "FlatEntity.h"
+#include "../Engine/GameEngine.h"
 
 using namespace FlatPhysics;
 
