@@ -12,12 +12,13 @@ namespace FlatPhysics
 		return angle;
 	}
 
+	
 	FlatBody::FlatBody() {}
 
 	FlatBody::FlatBody(float density, float mass, float inertia, float restitution, float area,
 		bool isStatic, float radius, float width, float height,
 		const std::vector<FlatVector>& vertices, ShapeType shapeType) :
-		position(FlatVector::Zero()), LinearVelocity(FlatVector::Zero()), angle(0.0f), angularVelocity(0.0f),
+		position(FlatVector::Zero()), LinearVelocity(FlatVector::Zero()), angle(0.0f), AngularVelocity(0.0f),
 		Density(density), Mass(mass), InvMass(mass > 0.0f ? 1.0f / mass : 0.0f),
 		Inertia(inertia), InvInertia(inertia > 0.0f ? 1.0f / inertia : 0.0f), Restitution(restitution), Area(area),
 		IsStatic(isStatic), Radius(radius), Width(width), Height(height), shapeType(shapeType),
@@ -140,7 +141,7 @@ namespace FlatPhysics
 		position += LinearVelocity * time;
 		
 
-		angle += angularVelocity * time;
+		angle += AngularVelocity * time;
 		
 		force = FlatVector::Zero();
 

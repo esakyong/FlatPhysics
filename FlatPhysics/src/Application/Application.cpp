@@ -38,7 +38,7 @@ void Application::Setting() {
     
     
 
-    /*FlatBody* ledgeBody1 = new FlatBody();
+    FlatBody* ledgeBody1 = new FlatBody();
     if (!FlatBody::CreateBoxBody(200.0f, 20.0f, 1.0f, 
         true, 0.5f, *ledgeBody1, errorMessage))
     {
@@ -60,7 +60,7 @@ void Application::Setting() {
     ledgeBody2->MoveTo({ 100.0f, -100.0f });
     ledgeBody2->Rotate(-PI / 10.0f);
     world.AddBody(ledgeBody2);
-    entityVector.push_back(new FlatEntity(ledgeBody2, BROWN));*/
+    entityVector.push_back(new FlatEntity(ledgeBody2, BROWN));
     
    
 }

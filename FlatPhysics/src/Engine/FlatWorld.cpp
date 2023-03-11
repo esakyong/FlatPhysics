@@ -125,11 +125,13 @@ namespace FlatPhysics
 				FlatManifold* contact = new FlatManifold(
 					bodyA, bodyB, normal, depth,
 					contact1, contact2, contactCount);
-				ResolveCollision(*contact);
+				//ResolveCollisionBasic(*contact);
+				ResolveCollisionWithRotation(*contact);
 			}
 		}
 	}
 
+	
 	void FlatWorld::StepBodies(float time, int totalIterations)
 	{
 		for (int i = 0; i < bodyVector.size(); i++)
@@ -138,7 +140,7 @@ namespace FlatPhysics
 		}
 	}
 
-	void FlatWorld::ResolveCollision(const FlatManifold& contact)
+	void FlatWorld::ResolveCollisionBasic(const FlatManifold& contact)
 	{
 		FlatBody* bodyA = contact.BodyA;
 		FlatBody* bodyB = contact.BodyB;
@@ -147,8 +149,6 @@ namespace FlatPhysics
 
 		FlatVector relativeVelocity = bodyB->LinearVelocity - bodyA->LinearVelocity;
 		
-
-
 		if (FlatMath::Dot(relativeVelocity, normal) > 0.0f)
 		{
 			return;
@@ -157,7 +157,6 @@ namespace FlatPhysics
 		float e = std::min(bodyA->Restitution, bodyB->Restitution);
 
 		float j = -(1.0f + e) * FlatMath::Dot(relativeVelocity, normal);
-
 		j /= bodyA->InvMass + bodyB->InvMass;
 
 		FlatVector impulse = j * normal;
@@ -166,8 +165,82 @@ namespace FlatPhysics
 		bodyB->LinearVelocity += impulse * bodyB->InvMass;
 	}
 
-	
+	void FlatWorld::ResolveCollisionWithRotation(const FlatManifold& contact)
+	{
+		FlatBody* bodyA = contact.BodyA;
+		FlatBody* bodyB = contact.BodyB;
+		FlatVector normal = contact.Normal;
+		FlatVector contact1 = contact.Contact1;
+		FlatVector contact2 = contact.Contact2;
+		int contactCount = contact.ContactCount;
 
-	
+		float e = std::min(bodyA->Restitution, bodyB->Restitution);
+
+		contactArray[0] = contact1;
+		contactArray[1] = contact2;
+		
+		for (int i = 0; i < contactCount; i++)
+		{
+			impulseArray[i] = FlatVector::Zero();
+			raArray[i] = FlatVector::Zero();
+			rbArray[i] = FlatVector::Zero();
+		}
+		
+		for (int i = 0; i < contactCount; i++)
+		{
+			FlatVector ra = contactArray[i] - bodyA->GetPosition();
+			FlatVector rb = contactArray[i] - bodyB->GetPosition();
+
+			raArray[i] = ra;
+			rbArray[i] = rb;
+
+			FlatVector raPerp(-ra.y, ra.x);
+			FlatVector rbPerp(-rb.y, rb.x);
+
+			FlatVector angularLinearVelocityA = raPerp * bodyA->AngularVelocity;
+			FlatVector angularLinearVelocityB = raPerp * bodyB->AngularVelocity;
+
+
+			FlatVector relativeVelocity = 
+				(bodyB->LinearVelocity + angularLinearVelocityB) - 
+				(bodyA->LinearVelocity + angularLinearVelocityA);
+
+			float contactVelocityMag = FlatMath::Dot(relativeVelocity, normal);
+
+			if (contactVelocityMag > 0.0f)
+			{
+				continue;
+			}
+
+			float raPerpDotN = FlatMath::Dot(raPerp, normal);
+			float rbPerpDotN = FlatMath::Dot(rbPerp, normal);
+
+			float denom = bodyA->InvMass + bodyB->InvMass +
+				(raPerpDotN * raPerpDotN) * bodyA->InvInertia +
+				(rbPerpDotN * rbPerpDotN) * bodyB->InvInertia;
+
+			float j = -(1.0f + e) * contactVelocityMag;
+			j /= denom;
+			j /= (float)contactCount;
+
+			FlatVector impulse = j * normal;
+			impulseArray[i] = impulse;
+		}
+
+		for (int i = 0; i < contactCount; i++)
+		{
+			
+			FlatVector impulse = impulseArray[i];
+			FlatVector ra = raArray[i];
+			FlatVector rb = rbArray[i];
+
+			bodyA->LinearVelocity += -impulse * bodyA->InvMass;
+			bodyA->AngularVelocity += -FlatMath::Cross(ra, impulse) * bodyA->InvInertia;
+			bodyB->LinearVelocity += impulse * bodyB->InvMass;
+			bodyB->AngularVelocity += FlatMath::Cross(rb, impulse) * bodyB->InvInertia;
+		}
+
+	}
+
 	
 }

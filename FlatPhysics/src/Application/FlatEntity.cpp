@@ -46,8 +46,17 @@ void FlatEntity::Draw()
 	Vector2 position = FlatConverter::ToVector2(body->GetPosition());
 	if (body->shapeType == ShapeType::Circle)
 	{
+		Vector2 va = { 0.0f, 0.0f };
+		Vector2 vb = { body->Radius, 0.0f };
+		Matrix matrix1 = MatrixTranslate(body->GetPosition().x, body->GetPosition().y, 0.0f);
+		Matrix matrix2 = MatrixRotateZ(body->GetAngle());
+		Matrix matrix = MatrixMultiply(matrix1, matrix2);
+		va = Vector2Transform(va, matrix);
+		vb = Vector2Transform(vb, matrix);
+
 		DrawCircleV(position, body->Radius, color);
 		DrawRing(position, body->Radius - 0.7f, body->Radius, 0, 360, 100, WHITE);
+		DrawLineV(va, vb, WHITE);
 	}
 	else if (body->shapeType == ShapeType::Box)
 	{

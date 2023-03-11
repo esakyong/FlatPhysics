@@ -34,6 +34,11 @@ namespace FlatPhysics {
 		FlatVector gravity;
 		std::vector<ContactPair> contactPairs;
 
+		FlatVector contactArray[2];
+		FlatVector impulseArray[2];
+		FlatVector raArray[2];
+		FlatVector rbArray[2];
+
 	public:
 		FlatWorld();
 		~FlatWorld();
@@ -55,6 +60,8 @@ namespace FlatPhysics {
 
 		void SeperateBodies(FlatBody* bodyA, FlatBody* bodyB, const FlatVector& mtv);
 	public:
-		void ResolveCollision(const FlatManifold& contact);
+		void ResolveCollisionBasic(const FlatManifold& contact);
+
+		void ResolveCollisionWithRotation(const FlatManifold& contact);
 	};
 }

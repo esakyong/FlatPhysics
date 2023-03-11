@@ -30,7 +30,7 @@ namespace FlatPhysics {
 		FlatVector position;
 		
 		float angle;
-		float angularVelocity;
+		
 
 		FlatVector force;
 		
@@ -57,10 +57,11 @@ namespace FlatPhysics {
 		float Height;
 		
 		FlatVector LinearVelocity;
+		float AngularVelocity;
 
 		FlatVector GetPosition() const;
 		float GetAngle() const;
-
+		
 		FlatBody();
 
 		FlatBody(float density, float mass, float inertia, float restitution, float area,
