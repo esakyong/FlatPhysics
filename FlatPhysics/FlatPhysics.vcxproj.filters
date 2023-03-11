@@ -27,7 +27,7 @@
     <ClInclude Include="src\Engine\PhysicsEngine\FlatVector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Application.h">
+    <ClInclude Include="src\Game\GameLogic\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\GameEngine\FlatConverter.h">
@@ -63,18 +63,15 @@
     <ClInclude Include="src\Game\GameLogic\Common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\GameLogic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\PhysicsEngine\FlatVector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Application.cpp">
+    <ClCompile Include="src\Game\GameLogic\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\main.cpp">
+    <ClCompile Include="src\Game\Application.h">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\PhysicsEngine\FlatTransform.cpp">
@@ -96,6 +93,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\GameEngine\FlatEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,59 +1,36 @@
-#pragma once
 
-#include <string>
-#include <vector>
-#include "../Engine/GameEngine.h"
-
-using namespace FlatPhysics;
-
-
-
-struct CameraExtents {
-	float left;
-	float right;
-	float bottom;
-	float top;
-};
-
-struct CameraManager {
-	Camera2D camera;
-	float linearSpeed;
-	float zoomSpeed;
-	CameraExtents GetExtents();
-};
+#include "GameLogic\Game.h"
 
 class Application
 {
 public:
-	void Setting();
-	void Update(float time);
-	void Draw(float time);
-	void End();
 
-private:
+	void Run()
+	{
+		Game game;
+
+		InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Game");
+		SetWindowState(FLAG_VSYNC_HINT);
 
 
-	std::string errorMessage;
+		game.Setting();
 
-	const float defaultZoom = 2.0f;
-	CameraManager camera
-	{ 
-		{ 
-			{ WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 },
-			{ 0, 0 },
-			0.0f, defaultZoom
-		}, 
-		70.0f, 0.5f
-	};
+		while (!WindowShouldClose()) {
+			float time = GetFrameTime();
+			game.Update(time);
 
-	
-	
-	std::vector<FlatEntity*> entityVector;
-	std::vector<FlatEntity*> entityRemovalVector;
+			BeginDrawing();
+			ClearBackground(SKYBLUE);
 
-	FlatWorld world;
+			game.Draw(time);
+
+			EndDrawing();
+		}
+
+		game.End();
+
+	}
 
 };
-
 
 

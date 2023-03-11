@@ -1,11 +1,5 @@
-#include "Application.h"
-
-
-
-
+#include "Game.h"
 #include <stdexcept>
-
-
 
 CameraExtents CameraManager::GetExtents()
 {
@@ -17,7 +11,7 @@ CameraExtents CameraManager::GetExtents()
     return { left, right, bottom, top };
 }
 
-void Application::Setting() {
+void Game::Setting() {
     SetTargetFPS(60);
     SetWindowPosition(10, 40);
 
@@ -65,7 +59,7 @@ void Application::Setting() {
    
 }
 
-void Application::Update(float deltaTime) {
+void Game::Update(float deltaTime) {
 
     // camera move
     camera.camera.zoom += ((float)GetMouseWheelMove() * camera.zoomSpeed);
@@ -169,7 +163,7 @@ void Application::Update(float deltaTime) {
     
 }
 
-void Application::Draw(float deltaTime) {
+void Game::Draw(float deltaTime) {
 
     BeginMode2D(camera.camera);
 
@@ -186,7 +180,7 @@ void Application::Draw(float deltaTime) {
     DrawFPS(20, 20);
 }
 
-void Application::End() {
+void Game::End() {
    
 }
 
