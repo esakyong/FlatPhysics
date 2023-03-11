@@ -38,7 +38,7 @@ void Application::Setting() {
     
     
 
-    FlatBody* ledgeBody1 = new FlatBody();
+    /*FlatBody* ledgeBody1 = new FlatBody();
     if (!FlatBody::CreateBoxBody(200.0f, 20.0f, 1.0f, 
         true, 0.5f, *ledgeBody1, errorMessage))
     {
@@ -60,19 +60,8 @@ void Application::Setting() {
     ledgeBody2->MoveTo({ 100.0f, -100.0f });
     ledgeBody2->Rotate(-PI / 10.0f);
     world.AddBody(ledgeBody2);
-    entityVector.push_back(new FlatEntity(ledgeBody2, BROWN));
+    entityVector.push_back(new FlatEntity(ledgeBody2, BROWN));*/
     
-
-    /*FlatBody* test = new FlatBody();
-    if (!FlatBody::CreateCircleBody(20.0f, 1.0f,
-        true, 0.5f, *ledgeBody2, errorMessage))
-    {
-        throw std::invalid_argument(errorMessage);
-    }
-    test->MoveTo({ 100.0f, -100.0f });
-    test->Rotate(-PI / 10.0f);
-    world.AddBody(test);
-    entityVector.push_back(new FlatEntity(test, YELLOW));*/
    
 }
 
@@ -187,15 +176,6 @@ void Application::Draw(float deltaTime) {
     for (int i = 0; i < entityVector.size(); i++)
     {
         entityVector[i]->Draw();
-    }
-
-    std::vector<FlatVector*>& contactPoints = world.ContactPointVector;
-
-    for (int i = 0; i < contactPoints.size(); i++)
-    {
-        Vector2 position = FlatConverter::ToVector2(*contactPoints[i]);
-        DrawRectangleV({ position.x - 1.5f, position.y - 1.5f }, { 3.0f, 3.0f }, RED);
-        DrawRectangleLinesEx({ position.x - 1.5f, position.y - 1.5f, 3.0f, 3.0f }, 0.4f, WHITE);
     }
 
     EndMode2D();

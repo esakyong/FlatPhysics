@@ -225,7 +225,6 @@ namespace FlatPhysics
 			inertia = (1.0f / 2.0f) * mass * (radius * radius);
 		}
 		
-
 		body = FlatBody(density, mass, inertia, restitution, area, isStatic, radius, 0.0f, 0.0f, std::vector<FlatVector>(), ShapeType::Circle);
 		return true;
 	}

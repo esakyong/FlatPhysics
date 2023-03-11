@@ -10,6 +10,13 @@ namespace FlatPhysics {
 	
 	class FlatBody;
 	struct FlatManifold;
+
+	struct ContactPair
+	{
+		int Item1;
+		int Item2;
+	};
+
 	class FlatWorld {
 	public:
 		static float MinBodySize() { return 0.1f * 0.1f; }
@@ -21,15 +28,11 @@ namespace FlatPhysics {
 		static int MinIterations() { return 1; }
 		static int MaxIterations() { return 128; }
 
-		std::vector<FlatVector*> ContactPointVector;
-
 	private:
 
 		std::vector<FlatBody*> bodyVector;
 		FlatVector gravity;
-		std::vector<FlatManifold*> contactVector;
-
-		
+		std::vector<ContactPair> contactPairs;
 
 	public:
 		FlatWorld();
@@ -44,7 +47,12 @@ namespace FlatPhysics {
 		bool GetBody(int index, FlatBody* &body);
 
 		void Step(float time, int iterations);
+
 	private:
+		void BroadPhase();
+		void NarrowPhase();
+		void StepBodies(float time, int totalIterations);
+
 		void SeperateBodies(FlatBody* bodyA, FlatBody* bodyB, const FlatVector& mtv);
 	public:
 		void ResolveCollision(const FlatManifold& contact);

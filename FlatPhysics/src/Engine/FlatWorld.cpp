@@ -46,98 +46,13 @@ namespace FlatPhysics
 	{
 		totalIterations = FlatMath::Clamp(totalIterations, MinIterations(), MaxIterations());
 
-		ContactPointVector.clear();
-
 		for (int currentIteration = 0; currentIteration < totalIterations; currentIteration++)
 		{ 
-			// Movement step
-			for (int i = 0; i < bodyVector.size(); i++)
-			{
-				bodyVector[i]->Step(time, gravity, totalIterations);
-			}
-
-			contactVector.clear();
-
-			// collision step
-			for (int i = 0; i < bodyVector.size() - 1; i++)
-			{
-				FlatBody* bodyA = bodyVector[i];
-				FlatAABB bodyA_aabb = bodyA->GetAABB();
-				
-				for (int j = i + 1; j < bodyVector.size(); j++)
-				{
-
-					FlatBody* bodyB = bodyVector[j];
-					FlatAABB bodyB_aabb = bodyB->GetAABB();
-	
-					
-					if (bodyA->IsStatic && bodyB->IsStatic)
-					{
-						continue;
-					}
-
-					if (!Collisions::IntersectAABBs(bodyA_aabb, bodyB_aabb))
-					{
-						continue;
-					}
-
-
-
-					FlatVector normal;
-					float depth;
-					if (Collisions::Collide(bodyA, bodyB, normal, depth))
-					{
-						SeperateBodies(bodyA, bodyB, normal * depth);
-						
-						FlatVector contact1;
-						FlatVector contact2;
-						int contactCount;
-						Collisions::FindContactPoints(bodyA, bodyB, contact1, contact2, contactCount);
-
-						ShapeType shapeTypeA = bodyA->shapeType;
-						ShapeType shapeTypeB = bodyB->shapeType;
-						
-
-						FlatManifold* contact = new FlatManifold(
-							bodyA, bodyB, normal, depth,
-							contact1, contact2, contactCount);
-
-						contactVector.push_back(contact);
-						
-					}
-					
-				}
-				
-			}
-
-			for (int i = 0; i < contactVector.size(); i++)
-			{
-				FlatManifold* contact = contactVector[i];
-				ResolveCollision(*contact);
-
-				// Add contact points for display (DEBUG).
-				if (currentIteration == totalIterations - 1)
-				{
-					auto it = std::find(ContactPointVector.begin(), ContactPointVector.end(), &contact->Contact1);
-					if (it == ContactPointVector.end())
-					{
-						ContactPointVector.push_back(&contact->Contact1);
-					}
-
-					if (contact->ContactCount > 1)
-					{
-						auto it = std::find(ContactPointVector.begin(), ContactPointVector.end(), &contact->Contact2);
-						if (it == ContactPointVector.end())
-						{
-							ContactPointVector.push_back(&contact->Contact2);
-						}
-					}
-				}
-				
-				
-			}
+			contactPairs.clear();
+			StepBodies(time, totalIterations);
+			BroadPhase();
+			NarrowPhase();
 		}
-
 	}
 	
 	void FlatWorld::SeperateBodies(FlatBody* bodyA, FlatBody* bodyB, const FlatVector& mtv)
@@ -154,6 +69,72 @@ namespace FlatPhysics
 		{
 			bodyA->Move(-mtv / 2.0f);
 			bodyB->Move(mtv / 2.0f);
+		}
+	}
+
+	void FlatWorld::BroadPhase()
+	{
+		
+		for (int i = 0; i < bodyVector.size() - 1; i++)
+		{
+			FlatBody* bodyA = bodyVector[i];
+			FlatAABB bodyA_aabb = bodyA->GetAABB();
+
+			for (int j = i + 1; j < bodyVector.size(); j++)
+			{
+
+				FlatBody* bodyB = bodyVector[j];
+				FlatAABB bodyB_aabb = bodyB->GetAABB();
+
+
+				if (bodyA->IsStatic && bodyB->IsStatic)
+				{
+					continue;
+				}
+
+				if (!Collisions::IntersectAABBs(bodyA_aabb, bodyB_aabb))
+				{
+					continue;
+				}
+				
+				contactPairs.push_back({ i, j });
+
+			}
+		}
+	}
+
+	void FlatWorld::NarrowPhase()
+	{
+		for (int i = 0; i < contactPairs.size(); i++)
+		{
+			auto pair = contactPairs[i];
+			FlatBody* bodyA = bodyVector[pair.Item1];
+			FlatBody* bodyB = bodyVector[pair.Item2];
+
+			FlatVector normal;
+			float depth;
+			if (Collisions::Collide(bodyA, bodyB, normal, depth))
+			{
+				SeperateBodies(bodyA, bodyB, normal * depth);
+
+				FlatVector contact1;
+				FlatVector contact2;
+				int contactCount;
+				Collisions::FindContactPoints(bodyA, bodyB, contact1, contact2, contactCount);
+
+				FlatManifold* contact = new FlatManifold(
+					bodyA, bodyB, normal, depth,
+					contact1, contact2, contactCount);
+				ResolveCollision(*contact);
+			}
+		}
+	}
+
+	void FlatWorld::StepBodies(float time, int totalIterations)
+	{
+		for (int i = 0; i < bodyVector.size(); i++)
+		{
+			bodyVector[i]->Step(time, gravity, totalIterations);
 		}
 	}
 
@@ -184,6 +165,8 @@ namespace FlatPhysics
 		bodyA->LinearVelocity -= impulse * bodyA->InvMass;
 		bodyB->LinearVelocity += impulse * bodyB->InvMass;
 	}
+
+	
 
 	
 	
