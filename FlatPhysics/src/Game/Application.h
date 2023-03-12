@@ -1,36 +1,34 @@
-
+#pragma once
 #include "GameLogic\Game.h"
 
-class Application
+
+int main(int argc, char** argv)
 {
-public:
+	Game game;
 
-	void Run()
-	{
-		Game game;
-
-		InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Game");
-		SetWindowState(FLAG_VSYNC_HINT);
+	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Game");
+	SetWindowState(FLAG_VSYNC_HINT);
 
 
-		game.Setting();
+	game.Setting();
 
-		while (!WindowShouldClose()) {
-			float time = GetFrameTime();
-			game.Update(time);
+	while (!WindowShouldClose()) {
+		float time = GetFrameTime();
+		game.Update(time);
 
-			BeginDrawing();
-			ClearBackground(SKYBLUE);
+		BeginDrawing();
+		ClearBackground(SKYBLUE);
 
-			game.Draw(time);
+		game.Draw(time);
 
-			EndDrawing();
-		}
-
-		game.End();
-
+		EndDrawing();
 	}
 
-};
+	game.End();
+
+	return 0;
+}
+
+
 
 

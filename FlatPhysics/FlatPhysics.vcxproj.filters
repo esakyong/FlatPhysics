@@ -104,9 +104,6 @@
     <ClCompile Include="src\Engine\GameEngine\FlatEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\PhysicsEngine\FlatTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -29,11 +29,13 @@ public:
 	void Update(float time);
 	void Draw(float time);
 	void End();
-
+	
 private:
-
+	double stepTime;
+	
+	
 	std::string errorMessage;
-
+	
 	const float defaultZoom = 2.0f;
 	CameraManager camera
 	{ 
@@ -46,12 +48,11 @@ private:
 	};
 
 	
-	
 	std::vector<FlatEntity*> entityVector;
 	std::vector<FlatEntity*> entityRemovalVector;
-
+	
 	FlatWorld world;
-
+	
 };
 
 

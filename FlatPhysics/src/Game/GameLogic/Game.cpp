@@ -122,10 +122,9 @@ void Game::Update(float deltaTime) {
         camera.camera.target.y -= deltaTime * camera.linearSpeed;
     }
     
-
-    
+    double startTime = GetTime();
     world.Step(deltaTime, 10);
-    
+    stepTime = GetTime() - startTime;
     CameraExtents extents = camera.GetExtents();
     float viewBottom = extents.top;
 
@@ -174,7 +173,7 @@ void Game::Draw(float deltaTime) {
 
     EndMode2D();
 
-    DrawText(TextFormat("StepTime : %.4f", GetFrameTime()), 20, GetScreenHeight() - 30 - 10 - 20 - 20, 20, YELLOW);
+    DrawText(TextFormat("StepTime : %.4fms", stepTime * 1000), 20, GetScreenHeight() - 30 - 10 - 20 - 20, 20, YELLOW);
     DrawText(TextFormat("BodyCount : %d", world.BodyCount()), 20, GetScreenHeight() - 30 - 10 - 20, 20, YELLOW);
     DrawText(TextFormat("Zoom : %d %%", int(camera.camera.zoom / defaultZoom * 100)), 20, GetScreenHeight() - 30 - 10, 20, YELLOW);
     DrawFPS(20, 20);

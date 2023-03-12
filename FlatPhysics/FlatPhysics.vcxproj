@@ -51,7 +51,6 @@
     <ClCompile Include="src\Engine\PhysicsEngine\FlatTransform.cpp" />
     <ClCompile Include="src\Engine\PhysicsEngine\FlatVector.cpp" />
     <ClCompile Include="src\Engine\PhysicsEngine\FlatWorld.cpp" />
-    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
