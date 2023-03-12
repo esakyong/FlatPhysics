@@ -80,7 +80,7 @@
     <ClCompile Include="src\Game\GameLogic\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Application.h">
+    <ClCompile Include="src\Game\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\PhysicsEngine\FlatTransform.cpp">

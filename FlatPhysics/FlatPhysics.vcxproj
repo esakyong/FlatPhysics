@@ -43,7 +43,7 @@
     <ClCompile Include="src\Engine\PhysicsEngine\FlatTree.cpp" />
     <ClCompile Include="src\Game\GameLogic\Game.cpp" />
     <ClCompile Include="src\Engine\GameEngine\FlatEntity.cpp" />
-    <ClCompile Include="src\Game\Application.h" />
+    <ClCompile Include="src\Game\Application.cpp" />
     <ClCompile Include="src\Engine\PhysicsEngine\Collision.cpp" />
     <ClCompile Include="src\Engine\PhysicsEngine\FlatAABB.cpp" />
     <ClCompile Include="src\Engine\PhysicsEngine\FlatBody.cpp" />
