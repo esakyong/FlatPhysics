@@ -4,15 +4,11 @@ namespace FlatPhysics
 {
 	bool Collisions::IntersectAABBs(const FlatAABB& a, const FlatAABB& b)
 	{
-		if (a.Max.x <= b.Min.x || b.Max.x <= a.Min.x ||
-			a.Max.y <= b.Min.y || b.Max.y <= a.Min.y)
-		{
-			return false;
-		}
-
-		return true;
+		return !(a.Max.x <= b.Min.x || b.Max.x <= a.Min.x ||
+			a.Max.y <= b.Min.y || b.Max.y <= a.Min.y);
 	}
 
+	
 	void Collisions::PointSegmentDistance(
 		const FlatVector& p, const FlatVector& a, const FlatVector& b,
 		float& distanceSquared, FlatVector& cp)

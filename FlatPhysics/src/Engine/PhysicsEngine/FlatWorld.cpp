@@ -45,7 +45,7 @@ namespace FlatPhysics
 	void FlatWorld::Step(float time, int totalIterations)
 	{
 		totalIterations = FlatMath::Clamp(totalIterations, MinIterations(), MaxIterations());
-
+		
 		for (int currentIteration = 0; currentIteration < totalIterations; currentIteration++)
 		{ 
 			contactPairs.clear();
@@ -55,6 +55,18 @@ namespace FlatPhysics
 		}
 	}
 	
+	void FlatWorld::TreeStep(float time, int totalIterations)
+	{
+		totalIterations = FlatMath::Clamp(totalIterations, MinIterations(), MaxIterations());
+
+		for (int currentIteration = 0; currentIteration < totalIterations; currentIteration++)
+		{
+			StepBodies(time, totalIterations);
+			
+			
+		}
+	}
+
 	void FlatWorld::SeperateBodies(FlatBody* bodyA, FlatBody* bodyB, const FlatVector& mtv)
 	{
 		if (bodyA->IsStatic)
@@ -72,6 +84,8 @@ namespace FlatPhysics
 		}
 	}
 
+	
+
 	void FlatWorld::BroadPhase()
 	{
 		
@@ -79,26 +93,21 @@ namespace FlatPhysics
 		{
 			FlatBody* bodyA = bodyVector[i];
 			FlatAABB bodyA_aabb = bodyA->GetAABB();
-
 			for (int j = i + 1; j < bodyVector.size(); j++)
 			{
-
 				FlatBody* bodyB = bodyVector[j];
 				FlatAABB bodyB_aabb = bodyB->GetAABB();
-
-
 				if (bodyA->IsStatic && bodyB->IsStatic)
 				{
 					continue;
 				}
-
 				if (!Collisions::IntersectAABBs(bodyA_aabb, bodyB_aabb))
 				{
 					continue;
 				}
 				
-				contactPairs.push_back({ i, j });
 
+				contactPairs.push_back({ i, j });
 			}
 		}
 	}

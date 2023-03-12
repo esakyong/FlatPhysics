@@ -8,14 +8,14 @@
 #include "FlatTransform.h"
 #include "FlatVector.h"
 #include "FlatMath.h"
-#include "FlatWorld.h"
+#include "FlatConstants.h"
 #include "FlatAABB.h"
 
-#define PI 3.141592f
+
 
 namespace FlatPhysics {
 	
-	class FlatWorld;
+	//class FlatWorld;
 
 	enum class ShapeType {
 		Circle = 0,

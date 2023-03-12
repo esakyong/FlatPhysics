@@ -63,6 +63,15 @@
     <ClInclude Include="src\Game\GameLogic\Common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\PhysicsEngine\FlatConstants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\PhysicsEngine\FlatTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\PhysicsEngine\FlatIAABB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\PhysicsEngine\FlatVector.cpp">
@@ -96,6 +105,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\PhysicsEngine\FlatTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

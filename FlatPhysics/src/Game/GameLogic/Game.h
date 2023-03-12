@@ -32,7 +32,6 @@ public:
 
 private:
 
-
 	std::string errorMessage;
 
 	const float defaultZoom = 2.0f;

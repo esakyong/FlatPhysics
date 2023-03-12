@@ -195,23 +195,23 @@ namespace FlatPhysics
 		
 		float area = radius * radius * PI;
 
-		if (area < FlatWorld::MinBodySize()) {
-			errorMessage = "Circle radius is too small. Min circle area is " + std::to_string(FlatWorld::MinBodySize()) + ".";
+		if (area < FlatConstants::MinBodySize) {
+			errorMessage = "Circle radius is too small. Min circle area is " + std::to_string(FlatConstants::MinBodySize) + ".";
 			return false;
 		}
 
-		if (area > FlatWorld::MaxBodySize()) {
-			errorMessage = "Circle radius is too large. Max circle area is " + std::to_string(FlatWorld::MaxBodySize()) + ".";
+		if (area > FlatConstants::MaxBodySize) {
+			errorMessage = "Circle radius is too large. Max circle area is " + std::to_string(FlatConstants::MaxBodySize) + ".";
 			return false;
 		}
 
-		if (density < FlatWorld::MinDensity()) {
-			errorMessage = "Density radius is too small. Min density area is " + std::to_string(FlatWorld::MinDensity()) + ".";
+		if (density < FlatConstants::MinDensity) {
+			errorMessage = "Density radius is too small. Min density area is " + std::to_string(FlatConstants::MinDensity) + ".";
 			return false;
 		}
 
-		if (density > FlatWorld::MaxDensity()) {
-			errorMessage = "Density radius is too large. Min density area is " + std::to_string(FlatWorld::MaxDensity()) + ".";
+		if (density > FlatConstants::MaxDensity) {
+			errorMessage = "Density radius is too large. Min density area is " + std::to_string(FlatConstants::MaxDensity) + ".";
 			return false;
 		}
 
@@ -236,23 +236,23 @@ namespace FlatPhysics
 
 		float area = width * height;
 
-		if (area < FlatWorld::MinBodySize()) {
-			errorMessage = "Area is too small. Min area is " + std::to_string(FlatWorld::MinBodySize()) + ".";
+		if (area < FlatConstants::MinBodySize) {
+			errorMessage = "Area is too small. Min area is " + std::to_string(FlatConstants::MinBodySize) + ".";
 			return false;
 		}
 
-		if (area > FlatWorld::MaxBodySize()) {
-			errorMessage = "Area is too large. Max area area is " + std::to_string(FlatWorld::MaxBodySize()) + ".";
+		if (area > FlatConstants::MaxBodySize) {
+			errorMessage = "Area is too large. Max area area is " + std::to_string(FlatConstants::MaxBodySize) + ".";
 			return false;
 		}
 
-		if (density < FlatWorld::MinDensity()) {
-			errorMessage = "Density radius is too small. Min density area is " + std::to_string(FlatWorld::MinDensity()) + ".";
+		if (density < FlatConstants::MinDensity) {
+			errorMessage = "Density radius is too small. Min density area is " + std::to_string(FlatConstants::MinDensity) + ".";
 			return false;
 		}
 
-		if (density > FlatWorld::MaxDensity()) {
-			errorMessage = "Density radius is too large. Min density area is " + std::to_string(FlatWorld::MaxDensity()) + ".";
+		if (density > FlatConstants::MaxDensity) {
+			errorMessage = "Density radius is too large. Min density area is " + std::to_string(FlatConstants::MaxDensity) + ".";
 			return false;
 		}
 

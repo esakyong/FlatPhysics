@@ -16,7 +16,7 @@ namespace FlatPhysics
 
 	public: 
 		static bool IntersectAABBs(const FlatAABB& a, const FlatAABB& b);
-
+		
 		static bool Collide(FlatBody* bodyA, FlatBody* bodyB, FlatVector& normal, float& depth);
 
 		static void FindContactPoints(

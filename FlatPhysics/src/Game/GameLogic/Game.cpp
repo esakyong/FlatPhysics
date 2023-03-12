@@ -124,8 +124,8 @@ void Game::Update(float deltaTime) {
     
 
     
-    world.Step(deltaTime, 20);
-
+    world.Step(deltaTime, 10);
+    
     CameraExtents extents = camera.GetExtents();
     float viewBottom = extents.top;
 

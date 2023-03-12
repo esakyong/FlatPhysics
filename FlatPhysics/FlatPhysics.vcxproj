@@ -22,6 +22,9 @@
     <ClInclude Include="src\Engine\GameEngine.h" />
     <ClInclude Include="src\Engine\GameEngine\FlatEntity.h" />
     <ClInclude Include="src\Engine\GameEngine\RandomHelper.h" />
+    <ClInclude Include="src\Engine\PhysicsEngine\FlatTree.h" />
+    <ClInclude Include="src\Engine\PhysicsEngine\FlatConstants.h" />
+    <ClInclude Include="src\Engine\PhysicsEngine\FlatIAABB.h" />
     <ClInclude Include="src\Game\GameLogic\Common.h" />
     <ClInclude Include="src\Game\GameLogic\Game.h" />
     <ClInclude Include="src\Engine\GameEngine\Common.h" />
@@ -37,6 +40,7 @@
     <ClInclude Include="src\Engine\PhysicsEngine\FlatWorld.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine\PhysicsEngine\FlatTree.cpp" />
     <ClCompile Include="src\Game\GameLogic\Game.cpp" />
     <ClCompile Include="src\Engine\GameEngine\FlatEntity.cpp" />
     <ClCompile Include="src\Game\Application.h" />
